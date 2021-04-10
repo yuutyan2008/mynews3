@@ -25,8 +25,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
      Route::get('news/edit', 'Admin\NewsController@edit'); // Lara16
      Route::post('news/edit', 'Admin\NewsController@update'); // Lara16
      Route::get('news/delete', 'Admin\NewsController@delete');// Lara16
-     Route::get('profile/update', 'Admin\ProfileController@update');// Lara16課題
-     Route::post('profile/update', 'Admin\ProfileController@update');// Lara16課題
+
+     Route::post('profile/edit', 'Admin\ProfileController@update');// Lara16課題
 });
 
 Auth::routes();

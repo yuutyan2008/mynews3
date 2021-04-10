@@ -8,8 +8,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 //App直下のProfileモデルを使う
 use App\Profile;
+//ProfileHistory Modelを使う
+use App\ProfileHistory;
+//時刻を扱うために Carbonという日付操作ライブラリを使う
+use Carbon\Carbon;
 
-//Controllerを継承してProfileControllerを定義します
+
+//Controllerを継承してProfileControllerクラスを定義します
 class ProfileController extends Controller
 {
     // add, create, edit, updateを追加  
@@ -29,7 +34,7 @@ class ProfileController extends Controller
         return view('admin.profile.edit', ['profile_form' => $profile]);
     }
 
-    public function update()
+    public function update(Request $request)
     {
       // Validationをかける
       $this->validate($request, Profile::$rules);
@@ -40,30 +45,20 @@ class ProfileController extends Controller
       // 送信されてきたフォームデータを格納する
       $profile_form = $request->all();
       
-      //画像変更時のエラー防止。userが削除すれば画像なし
-      if ($request->remove == 'true') {
-          $profile_form['image_path'] = null;
-          
-      //userがファイルを選択すれば、保存。$profile_formに画像のパスを保存する
-      } elseif ($request->file('image')) {
-          $path = $request->file('image')->store('public/image');
-          $profile_form['image_path'] = basename($path);
-          
-       //profile Modelに格納されている更新前の画像を、更新のためuserから送られてきたデータとみなす（更新しない）   
-      } else {
-          $profile_form['image_path'] = $profile->image_path;
-      }
-
-      unset($profile_form['image']);
-      unset($profile_form['remove']);
       unset($profile_form['_token']);      
       
      
 
       // 該当するデータを上書きして保存する
-      $profile->fill($profile_form)->save();       
+      $profile->fill($profile_form)->save(); 
+      
+      //ProfileHistory Modelにも編集履歴を追加
+      $profilehistory = new ProfileHistory;
+      $profilehistory->profile_id = $profile->id;
+      $profilehistory->edited_at = Carbon::now();
+      $profilehistory->save();
         
-        return redirect('admin/profile/edit');
+      return redirect(sprintf("admin/profile/edit?id=%d", $profile->id));
     }
       
      // 以下を追記

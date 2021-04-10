@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\News;
+//時刻を扱うために Carbonという日付操作ライブラリを使う
+use Carbon\Carbon;
+
+//App直下のHistoryモデルを使う
+use App\History;
+
+
 
 
 class NewsController extends Controller
@@ -73,10 +80,29 @@ class NewsController extends Controller
       $news = News::find($request->id);
       // 送信されてきたフォームデータを格納する
       $news_form = $request->all();
+      
+      if ($request->remove == 'true') {
+            $news_form['image_path'] = null;
+        } elseif ($request->file('image')) {
+            $path = $request->file('image')->store('public/image');
+            $news_form['image_path'] = basename($path);
+        } else {
+            $news_form['image_path'] = $news->image_path;
+        }
       unset($news_form['_token']);
+      unset($news_form['image']);
+      unset($news_form['remove']);
 
       // 該当するデータを上書きして保存する
       $news->fill($news_form)->save();
+      
+      //History Modelにも編集履歴を追加
+      $history = new History;
+      $history->news_id = $news->id;
+      //Carbon:日付操作ライブラリで現在時刻を取得し、History Modelの edited_at として記録
+      $history->edited_at = Carbon::now();
+      $history->save();
+
 
       return redirect('admin/news');
   }
