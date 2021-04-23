@@ -12,6 +12,9 @@ use Carbon\Carbon;
 //App直下のHistoryモデルを使う
 use App\History;
 
+//imageの保存をS3になるよう変更
+use Storage;
+
 
 
 
@@ -33,8 +36,8 @@ class NewsController extends Controller
 
       // formに画像があれば、保存する
       if (isset($form['image'])) {
-        $path = $request->file('image')->store('public/image');
-        $news->image_path = basename($path);
+        $path = Storage::disk('s3')->putFile('/',$form['image'],'public');
+        $news->image_path = Storage::disk('s3')->url($path);   
       } else {
           $news->image_path = null;
       }
@@ -98,9 +101,9 @@ class NewsController extends Controller
             $news_form['image_path'] = null;
         } elseif ($request->file('image')) {
       //画像の取得から保存までの場所$pathを定義し、public/imageディレクトリに保存できたら$pathに代入//
-            $path = $request->file('image')->store('public/image');
+            $path = Storage::disk('s3')->putFile('/',$form['image'],'public');
       //$pathの経路public/imageディレクトリを削除し、ファイル名だけをフォームに入力
-            $news_form['image_path'] = basename($path);
+            $news->image_path = Storage::disk('s3')->url($path);
         } else {
             $news_form['image_path'] = $news->image_path;
         }
@@ -128,6 +131,7 @@ class NewsController extends Controller
     public function delete(Request $request)
   {
       // 該当するNews Modelを取得
+      // dd($request);
       $news = News::find($request->id);
       // 削除する
       $news->delete();

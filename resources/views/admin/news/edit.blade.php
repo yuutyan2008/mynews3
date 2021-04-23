@@ -1,61 +1,67 @@
-@extends('layouts.front')
+@extends('layouts.admin')
+@section('title', 'ニュースの編集')
 
 @section('content')
     <div class="container">
-        <hr color="#c0c0c0">
-        @if (!is_null($headline))
-            <div class="row">
-                <div class="headline col-md-10 mx-auto">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="caption mx-auto">
-                                <div class="image">
-                                    @if ($headline->image_path)
-                                        <img src="{{ asset('storage/image/' . $headline->image_path) }}">
-                                    @endif
-                                </div>
-                                <div class="title p-2">
-                                    <h1>{{ str_limit($headline->title, 70) }}</h1>
-                                </div>
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <h2>ニュース編集</h2>
+                <form action="{{ action('Admin\NewsController@update') }}" method="post" enctype="multipart/form-data">
+                    @if (count($errors) > 0)
+                        <ul>
+                            @foreach($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                    <div class="form-group row">
+                        <label class="col-md-2" for="title">タイトル</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="title" value="{{ $news_form->title }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2" for="body">本文</label>
+                        <div class="col-md-10">
+                            <textarea class="form-control" name="body" rows="20">{{ $news_form->body }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2" for="image">画像</label>
+                        <div class="col-md-10">
+                            <input type="file" class="form-control-file" name="image">
+                            <div class="form-text text-info">
+                                設定中: {{ $news_form->image_path }}
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" name="remove" value="true">画像を削除
+                                </label>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <p class="body mx-auto">{{ str_limit($headline->body, 650) }}</p>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-10">
+                            <input type="hidden" name="id" value="{{ $news_form->id }}">
+                            {{ csrf_field() }}
+                            <input type="submit" class="btn btn-primary" value="更新">
                         </div>
+                    </div>
+                </form>
+                {{-- 以下を追記　--}}
+                <div class="row mt-5">
+                    <div class="col-md-4 mx-auto">
+                        <h2>編集履歴</h2>
+                        <ul class="list-group">
+                            @if ($news_form->histories != NULL)
+                                @foreach ($news_form->histories as $history)
+                                    <li class="list-group-item">{{ $history->edited_at }}</li>
+                                @endforeach
+                            @endif
+                        </ul>
                     </div>
                 </div>
             </div>
-        @endif
-        <hr color="#c0c0c0">
-        <div class="row">
-            <div class="posts col-md-8 mx-auto mt-3">
-                @foreach($posts as $post)
-                    <div class="post">
-                        <div class="row">
-                            <div class="text col-md-6">
-                                <div class="date">
-                                    {{ $post->updated_at->format('Y年m月d日') }}
-                                </div>
-                                <div class="title">
-                                    {{ str_limit($post->title, 150) }}
-                                </div>
-                                <div class="body mt-3">
-                                    {{ str_limit($post->body, 1500) }}
-                                </div>
-                            </div>
-                            <div class="image col-md-6 text-right mt-4">
-                                @if ($post->image_path)
-                                <呼び出されたimage_pathはファイル名のみ格納>
-                                <表示には画像のパス、つまりファイル名の保存場所とファイル名が必要名ため連結>
-                                    <img src="{{ asset('storage/image/' . $post->image_path) }}">
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    <hr color="#c0c0c0">
-                @endforeach
-            </div>
         </div>
-    </div>
     </div>
 @endsection
