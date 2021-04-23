@@ -17,13 +17,13 @@ use Carbon\Carbon;
 //Controllerを継承してProfileControllerクラスを定義します
 class ProfileController extends Controller
 {
-    // add, create, edit, updateを追加  
+    // add, create, edit, updateプロパティを追加  
     public function add()
     {
         return view('admin.profile.create');
     }
 
-
+     //userとサーバー間で相互情報のやりとりを管理するrequest/responceクラス
     public function edit(Request $request)
     {
         // Profile Modelからデータを取得する
@@ -61,7 +61,7 @@ class ProfileController extends Controller
       return redirect(sprintf("admin/profile/edit?id=%d", $profile->id));
     }
       
-     // 以下を追記
+     //userとサーバー間で相互情報のやりとりを管理するrequest/responceクラス
     public function create(Request $request)
     { 
       // Varidationを行う

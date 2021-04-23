@@ -1,4 +1,6 @@
+<!レイアウトの継承設定。(親ファイルディレクトリ名  ファイル名)
 @extends('layouts.admin')
+<!titleセクションにニュースの新規作成を表示
 @section('title', 'ニュースの新規作成')
 
 @section('content')
@@ -8,7 +10,7 @@
                 <h2>ニュース新規作成</h2>
                 <form action="{{ action('Admin\NewsController@create') }}" method="post" enctype="multipart/form-data">
 
- // 以下を追記
+
 
                     @if (count($errors) > 0)
                         <ul>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!投稿者用の親ファイル
+　<!Userがニュースを読むフロント部分の実装部分の実装>
 <html lang="{{ app()->getLocale() }}">
     <head>
         <meta charset="utf-8">
@@ -11,7 +11,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         {{-- 各ページごとにtitleタグを入れるために@yieldで空けておきます。 --}}
-        <! title部分にsectionをはめ込む>
+        <!title部分にsectionをはめ込む>
         <title>@yield('title')</title>
 
         <!-- Scripts -->
@@ -22,14 +22,12 @@
         <link rel="dns-prefetch" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
 
-        <!-- Styles -->
+        <!-- Styles --リンクを載せる>
         {{-- Laravel標準で用意されているCSSを読み込みます --}}
         <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
         {{-- この章の後半で作成するCSSを読み込みます --}}
-        <link href="{{ secure_asset('css/admin.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/front.css') }}" rel="stylesheet">
     </head>
-    <body>
-        <div id="app">
     <body>
         <div id="app">
             {{-- 画面上部に表示するナビゲーションバーです。 --}}

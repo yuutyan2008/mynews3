@@ -39,6 +39,7 @@
                         </thead>
                         <tbody>
                         <tbody>
+                            <posts配列のnewsとして受け取ったレコードデータを順に出力していく>
                             @foreach($posts as $news)
                                 <tr>
                                     <th>{{ $news->id }}</th>
